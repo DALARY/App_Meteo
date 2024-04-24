@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+{% endblock %}
+
+{% block title %}
+    Météo
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="form-container">
+            <h1>Application Météo</h1>
+            {{ form_start(weatherForm) }}
+                {{ form_widget(weatherForm.city_name) }}
+                <button type="submit" class="form-button"><i class="fa-solid fa-magnifying-glass fa-xl"></i></button>
+            {{ form_end(weatherForm) }}
+        </div>
+        <div class="weather-card">
+            <div class="left-card">
+                <h1 id="city-name">{{ weatherData.name }}</h1>
+                <p>{{ "now"|date("d/m/Y") }}</p>
+                <p>{{ "now"|date("H:m") }}</p>
+                <div class="weather-info">
+                    <p><i class="fa-solid fa-wind fa-xl"></i> {{ weatherData.wind.speed }} km/h</p>
+                    {% if weatherData.rain is defined %}
+                        <p><i class="fa-solid fa-cloud-rain fa-xl"></i> {{ weatherData.rain["1h"] ~ "mm/h" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% if weatherData.rain is defined %}
+                <div class="right-card-rain">
+                    <span class="today-header-rain">Aujourd'hui</span>
+                    <div class="temperature-card">
+                        <div class="temperature-image">
+                            <img src="https://openweathermap.org/img/wn/{{ weatherData.weather[0].icon }}@2x.png" alt="Weather Icon">
+                            <p>{{weatherData.weather[0].description | upper}}</p>
+                        </div>
+                        <p class="temperature">{{ weatherData.main.temp|round }}°C</p>
+                        <p class="temperature-range">{{ weatherData.main.temp_min|round }}°C - {{ weatherData.main.temp_max|round }}°C</p>
+                    </div>
+                </div>
+            {% elseif weatherData.weather[0].icon == "01d" %}
+                <div class="right-card-sunny">
+                    <span class="today-header-sunny">Aujourd'hui</span>
+                    <div class="temperature-card">
+                        <div class="temperature-image">
+                            <img src="https://openweathermap.org/img/wn/{{ weatherData.weather[0].icon }}@2x.png" alt="Weather Icon">
+                            <p>{{weatherData.weather[0].description | upper}}</p>
+                        </div>
+                        <p class="temperature">{{ weatherData.main.temp|round }}°C</p>
+                        <p class="temperature-range">{{ weatherData.main.temp_min|round }}°C - {{ weatherData.main.temp_max|round }}°C</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="right-card">
+                    <span class="today-header">Aujourd'hui</span>
+                    <div class="temperature-card">
+                        <div class="temperature-image">
+                            <img src="https://openweathermap.org/img/wn/{{ weatherData.weather[0].icon }}@2x.png" alt="Weather Icon">
+                            <p>{{weatherData.weather[0].description | upper}}</p>
+                        </div>
+                        <p class="temperature">{{ weatherData.main.temp|round }}°C</p>
+                        <p class="temperature-range">{{ weatherData.main.temp_min|round }}°C - {{ weatherData.main.temp_max|round }}°C</p>
+                    </div>
+                </div>
+            {% endif %}  
+        </div>
+        <button id="forecast-more">Voir la semaine</button>
+    </div>
+    <div id="forecast" class="forecast"></div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/script.js') }}"></script>
+{% endblock %}
